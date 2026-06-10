@@ -1,0 +1,47 @@
+name: CI/CD - Niveau 3 (Avancé)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Vérifier les fichiers requis
+        run: |
+          echo "Vérification des fichiers..."
+          for file in index.html nginx.conf Dockerfile docker-compose.yml; do
+            test -f "$file" || (echo "Erreur: $file manquant" && exit 1)
+          done
+          echo "Tous les fichiers requis sont présents !"
+
+      - name: Build de l'image Docker
+        run: docker build -t nginx-tp-niveau3 .
+
+      - name: Démarrer le service avec Docker Compose
+        run: |
+          docker compose up -d
+          sleep 6
+
+      - name: Vérifier la configuration Nginx dans le conteneur
+        run: docker compose exec web nginx -t
+
+      - name: Vérifier le contenu de la page
+        run: |
+          for i in $(seq 1 12); do
+            if curl -sSf http://localhost:8080 >/dev/null; then
+              echo "Service web disponible"
+              break
+            fi
+            sleep 2
+          done
+          curl -sSf http://localhost:8080 | grep -q "Lozère"
+          echo "Le contenu de la page contient bien 'Lozère'."
+
+      - name: Arrêter Docker Compose
+        if: always()
+        run: docker compose down

@@ -22,9 +22,10 @@ La pipeline vérifie :
         │   └── **workflows/**
     
         │       ├── [ci-niveau1.yml](.github/workflows/ci-niveau1.yml) → Pipeline GitHub Actions (Niveau 1)
-        │       └── [ci-niveau2.yml](.github/workflows/ci-niveau2.yml) → Pipeline GitHub Actions (Niveau 2)
+        │       ├── [ci-niveau2.yml](.github/workflows/ci-niveau2.yml) → Pipeline GitHub Actions (Niveau 2)
+        │       └── [ci-niveau3.yml](.github/workflows/ci-niveau3.yml) → Pipeline GitHub Actions (Niveau 3)
 
-        ├── [docker-compose.yml](docker-compose.yml) → Configuration Docker Compose utilisée pour le Niveau 2
+        ├── [docker-compose.yml](docker-compose.yml) → Configuration Docker Compose utilisée pour le Niveau 2 et 3
 
         ├── [Dockerfile](Dockerfile) → Instructions pour construire l'image Docker
 
