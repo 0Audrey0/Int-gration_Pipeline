@@ -1,0 +1,26 @@
+name: CI/CD - Niveau 1 (Novice)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Vérifier la présence des fichiers requis
+        run: |
+          echo "Vérification des fichiers..."
+          test -f index.html || (echo "Erreur: index.html manquant" && exit 1)
+          test -f nginx.conf || (echo "Erreur: nginx.conf manquant" && exit 1)
+          test -f Dockerfile || (echo "Erreur: Dockerfile manquant" && exit 1)
+          echo "Tous les fichiers requis sont présents !"
+
+      - name: Build de l'image Docker
+        run: docker build -t nginx-tp-novice .
+
+      - name: Tester la configuration Nginx
+        run: docker run --rm nginx-tp-novice nginx -t
