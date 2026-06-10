@@ -12,15 +12,15 @@ La pipeline vérifie :
 
 ---
 
-## **Structure du projet**
+# **Structure du projet**
 
-DOCKER/
-├── Cours_Intégration/
-│   ├── .github/
-│   │   └── workflows/
-│   │       └── ci-niveau1.yml   # Pipeline GitHub Actions (Niveau 1)
-│   ├── docker-compose.yml       # (Optionnel) Configuration Docker Compose
-│   ├── Dockerfile               # Instructions pour construire l'image Docker
-│   ├── index.html               # Page HTML servie par Nginx
-│   ├── nginx.conf               # Configuration Nginx
-│   └── README.md                # Ce fichier
+**DOCKER/**
+└── **Cours_Intégration/**
+    ├── **.github/**
+    │   └── **workflows/**
+    │       └── [ci-niveau1.yml](#) → Pipeline GitHub Actions (Niveau 1)
+    ├── [docker-compose.yml](#) → (Optionnel) Configuration Docker Compose
+    ├── [Dockerfile](#) → Instructions pour construire l'image Docker
+    ├── [index.html](#) → Page HTML servie par Nginx
+    ├── [nginx.conf](#) → Configuration Nginx
+    └── [README.md](#) → Ce fichier
