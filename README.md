@@ -14,13 +14,21 @@ La pipeline vérifie :
 
 # **Structure du projet**
 
-**DOCKER/**
-└── **Cours_Intégration/**
-    ├── **.github/**
-    │   └── **workflows/**
-    │       └── [ci-niveau1.yml](#) → Pipeline GitHub Actions (Niveau 1)
-    ├── [docker-compose.yml](#) → (Optionnel) Configuration Docker Compose
-    ├── [Dockerfile](#) → Instructions pour construire l'image Docker
-    ├── [index.html](#) → Page HTML servie par Nginx
-    ├── [nginx.conf](#) → Configuration Nginx
-    └── [README.md](#) → Ce fichier
+
+    └── **Cours_Intégration/**
+
+        ├── **.github/**
+
+        │   └── **workflows/**
+    
+        │       └── [ci-niveau1.yml](.github/workflows/ci-niveau1.yml) → Pipeline GitHub Actions (Niveau 1)
+
+        ├── [docker-compose.yml](docker-compose.yml) → (Optionnel) Configuration Docker Compose
+
+        ├── [Dockerfile](Dockerfile) → Instructions pour construire l'image Docker
+
+        ├── [index.html](index.html) → Page HTML servie par Nginx
+
+        ├── [nginx.conf](nginx.conf) → Configuration Nginx
+
+        └── [README.md](README.md) → Ce fichier
