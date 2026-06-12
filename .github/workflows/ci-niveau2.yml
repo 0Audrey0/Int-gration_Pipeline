@@ -25,11 +25,19 @@ jobs:
 
       - name: Démarrer le service avec Docker Compose
         run: |
-          docker compose up -d
+          docker compose up -d --build
           sleep 6
 
       - name: Vérifier que le service répond
         run: |
+          echo "--- Contrôle Docker Compose ---"
+          docker compose ps
+          docker compose port web 80 || true
+
+          echo "--- Vérification Nginx dans le conteneur ---"
+          docker compose exec web nginx -t
+          docker compose exec -T web curl -sSf http://127.0.0.1:80 >/dev/null
+
           PORT=$(docker compose port web 80 | cut -d: -f2 || true)
           if [ -z "$PORT" ]; then
             echo "Impossible de récupérer le port dynamiquement, utilisation du port 8081 par défaut."
