@@ -33,13 +33,13 @@ jobs:
       - name: Vérifier le contenu de la page
         run: |
           for i in $(seq 1 12); do
-            if curl -sSf http://localhost:8080 >/dev/null; then
+            if curl -sSf http://localhost:8081 >/dev/null; then
               echo "Service web disponible"
               break
             fi
             sleep 2
           done
-          curl -sSf http://localhost:8080 | grep -q "Lozère"
+          curl -sSf http://localhost:8081 | grep -q "Lozère"
           echo "Le contenu de la page contient bien 'Lozère'."
 
       - name: Arrêter Docker Compose

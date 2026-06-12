@@ -26,15 +26,17 @@ jobs:
       - name: Démarrer le service avec Docker Compose
         run: |
           docker compose up -d
+          sleep 6
 
       - name: Vérifier que le service répond
         run: |
-          # On récupère dynamiquement le port mappé sur le port 80 du conteneur
-          # Cela évite les erreurs si on change le port dans docker-compose.yml
-          PORT=$(docker compose port web 80 | cut -d: -f2)
+          PORT=$(docker compose port web 80 | cut -d: -f2 || true)
+          if [ -z "$PORT" ]; then
+            echo "Impossible de récupérer le port dynamiquement, utilisation du port 8081 par défaut."
+            PORT=8081
+          fi
           echo "Service détecté sur le port : $PORT"
-          
-          # Boucle de polling (attente active) pour laisser le temps au service de démarrer
+
           for i in $(seq 1 15); do
             echo "Tentative $i : vérification du service sur le port $PORT..."
             if curl -sSf http://localhost:$PORT >/dev/null; then
@@ -43,9 +45,8 @@ jobs:
             fi
             sleep 2
           done
-          
-          # Vérification finale du contenu
-          curl -sSf http://localhost:$PORT | grep -q "Niveau 1 validé"
+
+          curl -sSf http://localhost:$PORT | grep -q "Lozère"
           echo "La page HTML est servie correctement."
 
       - name: Diagnostic en cas d'échec
