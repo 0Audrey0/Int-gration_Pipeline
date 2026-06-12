@@ -11,46 +11,38 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      - name: Vérifier la présence des fichiers requis
+      - name: Build et Démarrage avec Docker Compose
         run: |
-          echo "Vérification des fichiers..."
-          test -f index.html || (echo "Erreur: index.html manquant" && exit 1)
-          test -f nginx.conf || (echo "Erreur: nginx.conf manquant" && exit 1)
-          test -f Dockerfile || (echo "Erreur: Dockerfile manquant" && exit 1)
-          test -f docker-compose.yml || (echo "Erreur: docker-compose.yml manquant" && exit 1)
-          echo "Tous les fichiers requis sont présents !"
-
-      - name: Build de l'image Docker
-        run: docker build -t nginx-tp-niveau2 .
-
-      - name: Démarrer le service avec Docker Compose
-        run: |
-          docker compose up -d --build
-          sleep 6
+          # --wait attend que le conteneur soit réellement "healthy"
+          docker compose up -d --wait
+          sleep 2
 
       - name: Vérifier que le service répond
         run: |
+          echo "--- Liste des conteneurs ---"
           docker compose ps
+          
+          echo "--- Test de syntaxe Nginx ---"
           docker compose exec web nginx -t
 
-          for i in $(seq 1 15); do
-            echo "Tentative $i : vérification du service sur le port 8081..."
+          echo "--- Test de connexion HTTP ---"
+          # On teste l'accès via le port 8081
+          for i in $(seq 1 10); do
             if curl -sSf http://localhost:8081 >/dev/null; then
-              echo "Service web disponible !"
+              echo "Succès : Service web disponible !"
               break
             fi
-            sleep 2
+            echo "Tentative $i échouée, on attend..."
+            sleep 3
           done
 
-          curl -sSf http://localhost:8081 | grep -q "Lozère"
-          echo "La page HTML est servie correctement."
+          echo "--- Vérification du contenu ---"
+          curl -sSf http://localhost:8081 | grep -q "Lozère" || (echo "Erreur : Texte 'Lozère' non trouvé" && exit 1)
 
       - name: Diagnostic en cas d'échec
         if: failure()
         run: |
-          echo "--- Diagnostic : État des conteneurs ---"
-          docker ps -a
-          echo "--- Diagnostic : Logs du conteneur ---"
+          echo "--- Diagnostic : Logs complets ---"
           docker compose logs web
 
       - name: Arrêter Docker Compose
