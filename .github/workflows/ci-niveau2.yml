@@ -30,31 +30,19 @@ jobs:
 
       - name: Vérifier que le service répond
         run: |
-          echo "--- Contrôle Docker Compose ---"
           docker compose ps
-          docker compose port web 80 || true
-
-          echo "--- Vérification Nginx dans le conteneur ---"
           docker compose exec web nginx -t
-          docker compose exec -T web curl -sSf http://127.0.0.1:80 >/dev/null
-
-          PORT=$(docker compose port web 80 | cut -d: -f2 || true)
-          if [ -z "$PORT" ]; then
-            echo "Impossible de récupérer le port dynamiquement, utilisation du port 8081 par défaut."
-            PORT=8081
-          fi
-          echo "Service détecté sur le port : $PORT"
 
           for i in $(seq 1 15); do
-            echo "Tentative $i : vérification du service sur le port $PORT..."
-            if curl -sSf http://localhost:$PORT >/dev/null; then
+            echo "Tentative $i : vérification du service sur le port 8081..."
+            if curl -sSf http://localhost:8081 >/dev/null; then
               echo "Service web disponible !"
               break
             fi
             sleep 2
           done
 
-          curl -sSf http://localhost:$PORT | grep -q "Lozère"
+          curl -sSf http://localhost:8081 | grep -q "Lozère"
           echo "La page HTML est servie correctement."
 
       - name: Diagnostic en cas d'échec
