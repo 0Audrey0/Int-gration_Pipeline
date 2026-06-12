@@ -31,13 +31,13 @@ jobs:
       - name: Vérifier que le service répond
         run: |
           for i in $(seq 1 12); do
-            if curl -sSf http://localhost:8080 >/dev/null; then
+            if curl -sSf http://localhost:8081 >/dev/null; then
               echo "Service web disponible"
               break
             fi
             sleep 2
           done
-          curl -sSf http://localhost:8080 | grep -q "Niveau 1 validé"
+          curl -sSf http://localhost:8081 | grep -q "Niveau 1 validé"
           echo "La page HTML est servie correctement."
 
       - name: Arrêter Docker Compose
