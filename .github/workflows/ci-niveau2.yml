@@ -29,10 +29,15 @@ jobs:
 
       - name: Vérifier que le service répond
         run: |
-          # Boucle de polling robuste sur le port 8081
+          # On récupère dynamiquement le port mappé sur le port 80 du conteneur
+          # Cela évite les erreurs si on change le port dans docker-compose.yml
+          PORT=$(docker compose port web 80 | cut -d: -f2)
+          echo "Service détecté sur le port : $PORT"
+          
+          # Boucle de polling (attente active) pour laisser le temps au service de démarrer
           for i in $(seq 1 15); do
-            echo "Tentative $i : vérification du port 8081..."
-            if curl -sSf http://localhost:8081 >/dev/null; then
+            echo "Tentative $i : vérification du service sur le port $PORT..."
+            if curl -sSf http://localhost:$PORT >/dev/null; then
               echo "Service web disponible !"
               break
             fi
@@ -40,10 +45,9 @@ jobs:
           done
           
           # Vérification finale du contenu
-          curl -sSf http://localhost:8081 | grep -q "Niveau 1 validé"
+          curl -sSf http://localhost:$PORT | grep -q "Niveau 1 validé"
           echo "La page HTML est servie correctement."
 
-      # Étape de diagnostic : s'exécute uniquement si une étape précédente échoue
       - name: Diagnostic en cas d'échec
         if: failure()
         run: |
